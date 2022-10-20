@@ -78,8 +78,8 @@ const cardNumberPattern = {
 /* 
   regex: /(^5[1-5]\d{0,2}|^22[2-9]\d|^2[3-7]\d{0,2})\d{0,12}/
 
-  ^5[1-5]\d{0,2}: começa com com 5 seguido de um dígito de 1 a 5, seguido de mais 2 dígitos
-    OU
+  ^5[1-5]\d{0,2}: começa com 5 seguido de um dígito de 1 a 5, seguido de mais 2 dígitos
+    OUinput id="card-number" />
   ^22[2-9]\d: começa com 22 seguido de um dígito de 2 a 9, seguido de mais um dígito
     OU
   ^2[3-7]\d{0,2}: começa com 2 seguido de um dígito de 3-7, seguido de mais 2 dígitos
@@ -91,3 +91,82 @@ const cardNumberPattern = {
 */
 
 const cardNumberMasked = IMask(cardNumber, cardNumberPattern)
+
+
+
+// ****Eventos do cartão de crédito****
+
+/* 
+  addEventListener fica "escutando" uma ação do usuário, e quando acontece uma função é diparada.
+  Como por exemplo no código abaixo, quando o botão é clicado dispara a função e mostra um alerta na página informando que o cartão foi adicionado
+
+    addButton.addEventListener('click', () => {
+      alert("Cartão adicionado!")
+    })
+
+  E nesse outro exemplo temos um evento 'input', toda vez que o usuário interage com o input a função é disparada.
+  Trocando o valor da div de classe .value, pelo valor digitado no input com o innerText
+
+    addEventListener('input', () => {
+      const ccHolder = document.querySelector(".cc-holder .value")
+
+      ccHolder.innerText = cardHolder.value
+    })
+*/
+
+const addButton = document.querySelector("#add-card")
+addButton.addEventListener('click', () => {
+  alert("Cartão adicionado!")
+})
+
+document.querySelector("form").addEventListener("submit", (event) => {
+  event.preventDefault()
+})
+
+const cardHolder = document.querySelector("#card-holder")
+cardHolder.addEventListener('input', () => {
+  const ccHolder = document.querySelector(".cc-holder .value")
+
+  ccHolder.innerText = cardHolder.value.length === 0 ? "NOME COMO ESCRITO NO CARTÃO" : cardHolder.value
+  /* 
+    Se o valor/tamanho de cardHolder (input) for igual a zero, no cartão ficará escrito
+    "NOME COMO ESCRITO NO CARTÃO", se for maior que zero aparecerá o valor digitado no
+    input
+  */
+})
+
+// ****Capturando eventos usando o IMask****
+
+securityCodeMasked.on('accept', () => {
+  updateSecurityCode(securityCodeMasked.value)
+})
+
+function updateSecurityCode(code) {
+  const ccSecurity = document.querySelector(".cc-security .value")
+
+  ccSecurity.innerText = code.length === 0 ? "123" : code
+}
+
+
+expirationDateMasked.on('accept', () => {
+  updateExpirationDate(expirationDateMasked.value)
+})
+
+function updateExpirationDate(expiration) {
+  const ccExpirationDate = document.querySelector(".cc-expiration .value")
+
+  ccExpirationDate.innerText = expiration
+}
+
+
+cardNumberMasked.on('accept', () => {
+  const cardType = cardNumberMasked.masked.currentMask.cardtype // Atribuindo o tipo de cartão para a variável cardType
+  setCardType(cardType) // Usando a função para mudar o layout do cartão de acordo com a bandeira
+  updateCardNumber(cardNumberMasked.value)
+})
+
+function updateCardNumber(number) {
+  const ccNumber = document.querySelector(".cc-number")
+
+  ccNumber.innerText = number.length === 0 ? "0000 0000 0000 0000" : number
+}
